@@ -1,6 +1,8 @@
 from random import choice
 import argparse
 from urllib import request as urlreq, error as urlerr
+from cowsay import cowsay, read_dot_cow, cowthink
+from io import StringIO
 
 def bullscows(guess: str, secret: str) -> (int, int):
     bulls, cows = 0, 0
@@ -10,15 +12,26 @@ def bullscows(guess: str, secret: str) -> (int, int):
 
     return bulls, cows
 
+cow = read_dot_cow(StringIO("""
+$the_cow = <<EOC;
+         $thoughts
+          $thoughts
+           ___
+          (o o)
+         (  V  )
+        /--m-m-
+EOC
+"""))
+
 def ask(prompt: str, valid: list[str] = None) -> str:
     while True:
-        print(prompt)
+        print(cowthink(prompt, cowfile=cow))
         word = input()
         if valid is None or word in valid:
             return word
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
-    print(format_string.format(bulls, cows))
+    print(cowthink(format_string.format(bulls, cows), cowfile=cow))
 
 def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     sec_word = choice(words)
